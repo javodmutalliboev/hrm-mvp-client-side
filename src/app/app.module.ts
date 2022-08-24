@@ -8,7 +8,7 @@ import { en_US } from 'ng-zorro-antd/i18n';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IconsProviderModule } from './icons-provider.module';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -17,11 +17,14 @@ import { LoginComponent } from './login/login.component';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { LayoutComponent } from './layout/layout.component';
+import { HttpRequestInterceptor } from './interceptors/HttpRequestInterceptor';
 
 registerLocaleData(en);
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent],
+  declarations: [AppComponent, LoginComponent, LayoutComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -36,8 +39,18 @@ registerLocaleData(en);
     NzInputModule,
     NzButtonModule,
     NzCheckboxModule,
+    NzCardModule,
   ],
-  providers: [{ provide: NZ_I18N, useValue: en_US }],
+  providers: [
+    { provide: NZ_I18N, useValue: en_US },
+    [
+      {
+        provide: HTTP_INTERCEPTORS,
+        useClass: HttpRequestInterceptor,
+        multi: true,
+      },
+    ],
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
